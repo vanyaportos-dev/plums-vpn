@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Plume Connect — VPN нового поколения. 31 сервер в 15 странах. Современные протоколы. Без логов." />
+  <title>Plume Connect — VPN нового поколения</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>🪶</text></svg>" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Telegram Mini App SDK (нужен для авто-входа) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ================================================
+       NAVIGATION
+       ================================================ -->
+  <nav class="navbar" role="navigation" aria-label="Основная навигация">
+    <div class="container">
+      <div class="navbar-inner">
+        <!-- Логотип -->
+        <a href="/" class="navbar-logo">
+          <i class="fas fa-feather-alt" aria-hidden="true"></i>
+          Plume Connect
+        </a>
+
+        <!-- Ссылки (десктоп) -->
+        <div class="navbar-links" role="menubar">
+          <a href="#features" role="menuitem">Возможности</a>
+          <a href="#pricing" role="menuitem">Тарифы</a>
+          <a href="#faq" role="menuitem">FAQ</a>
+        </div>
+
+        <!-- Кнопка Telegram (десктоп) -->
+        <div class="navbar-actions">
+          <a
+            href="https://t.me/plumecrobot"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary btn-sm"
+            aria-label="Открыть Plume Connect в Telegram"
+          >
+            <i class="fab fa-telegram" aria-hidden="true"></i>
+            Открыть в Telegram
+          </a>
+        </div>
+
+        <!-- Бургер (мобайл) -->
+        <button class="navbar-burger" aria-label="Открыть меню" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Мобильное меню -->
+  <div class="navbar-mobile" aria-modal="true" role="dialog" aria-label="Навигация">
+    <button class="navbar-mobile-close" aria-label="Закрыть меню">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <nav class="navbar-mobile-links" role="navigation">
+      <a href="#features">Возможности</a>
+      <a href="#pricing">Тарифы</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="navbar-mobile-actions">
+      <a
+        href="https://t.me/plumecrobot"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-primary btn-block"
+        aria-label="Открыть бот в Telegram"
+      >
+        <i class="fab fa-telegram" aria-hidden="true"></i>
+        Открыть в Telegram
+      </a>
+    </div>
+  </div>
+
+  <!-- ================================================
+       HERO SECTION
+       ================================================ -->
+  <section class="hero" aria-label="Заголовок">
+    <!-- Декоративный фон -->
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-grid"></div>
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+    </div>
+
+    <div class="container">
+      <div class="hero-inner">
+        <!-- Бейдж -->
+        <div class="hero-badge">
+          <span class="dot" aria-hidden="true"></span>
+          31 сервер · 15 стран · Без логов
+        </div>
+
+        <!-- Заголовок -->
+        <h1 class="hero-title">
+          Plume Connect —
+          <span class="gradient-text">VPN нового&nbsp;поколения</span>
+        </h1>
+
+        <!-- Подзаголовок -->
+        <p class="hero-subtitle">
+          31 сервер в 15 странах. Современные протоколы WireGuard и VLESS.
+          Политика No-Log. Молниеносная скорость без ограничений.
+          Управление — прямо в Telegram.
+        </p>
+
+        <!-- Кнопки hero -->
+        <div class="hero-actions">
+          <!-- Главная CTA — открыть бота -->
+          <a
+            href="https://t.me/plumecrobot"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary btn-lg"
+            aria-label="Начать пользоваться VPN через Telegram-бота"
+          >
+            <i class="fab fa-telegram" aria-hidden="true"></i>
+            Начать в Telegram
+          </a>
+          <a href="#features" class="btn btn-ghost btn-lg">
+            Как это работает
+            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <!-- Бейдж Mini App -->
+        <div class="hero-tg-note" aria-label="Подсказка о Mini App">
+          <i class="fab fa-telegram" aria-hidden="true"></i>
+          Личный кабинет доступен прямо внутри Telegram — без паролей и регистрации
+        </div>
+
+        <!-- Статистика -->
+        <div class="hero-stats" aria-label="Статистика сервиса">
+          <div class="hero-stat-item">
+            <span class="hero-stat-value">31</span>
+            <span class="hero-stat-label">серверов</span>
+          </div>
+          <div class="hero-stat-sep" aria-hidden="true"></div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-value">15</span>
+            <span class="hero-stat-label">стран</span>
+          </div>
+          <div class="hero-stat-sep" aria-hidden="true"></div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-value">99.9%</span>
+            <span class="hero-stat-label">uptime</span>
+          </div>
+          <div class="hero-stat-sep" aria-hidden="true"></div>
+          <div class="hero-stat-item">
+            <span class="hero-stat-value">0</span>
+            <span class="hero-stat-label">логов</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       FEATURES SECTION
+       ================================================ -->
+  <section class="section features" id="features" aria-labelledby="features-title">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-label">
+          <i class="fas fa-star" aria-hidden="true"></i>
+          Возможности
+        </span>
+        <h2 class="section-title" id="features-title">
+          Всё, что нужно для<br />
+          <span class="gradient-text">безопасного интернета</span>
+        </h2>
+        <p class="section-subtitle">
+          Современные технологии шифрования, высокая скорость и удобное управление через Telegram-бот.
+        </p>
+      </div>
+
+      <div class="features-grid">
+
+        <!-- Карточка 1 -->
+        <article class="feature-card reveal">
+          <div class="feature-icon" aria-hidden="true">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="feature-title">Безопасность на высшем уровне</h3>
+          <p class="feature-desc">
+            Военное шифрование AES-256. Протоколы WireGuard и VLESS не дадут никому перехватить ваш трафик.
+          </p>
+        </article>
+
+        <!-- Карточка 2 -->
+        <article class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon" aria-hidden="true">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3 class="feature-title">Скорость без ограничений</h3>
+          <p class="feature-desc">
+            Канал до 10 Гбит/с на каждом сервере. Никаких искусственных лимитов скорости — только чистый интернет.
+          </p>
+        </article>
+
+        <!-- Карточка 3 -->
+        <article class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon" aria-hidden="true">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3 class="feature-title">31 сервер по всему миру</h3>
+          <p class="feature-desc">
+            Европа, Азия, Америка — выберите оптимальный сервер для вашей задачи. Автоматический выбор лучшего узла.
+          </p>
+        </article>
+
+        <!-- Карточка 4 -->
+        <article class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon" aria-hidden="true">
+            <i class="fas fa-user-secret"></i>
+          </div>
+          <h3 class="feature-title">Политика No-Log</h3>
+          <p class="feature-desc">
+            Мы не храним никаких данных о ваших подключениях, посещённых сайтах или времени активности.
+          </p>
+        </article>
+
+        <!-- Карточка 5 -->
+        <article class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon" aria-hidden="true">
+            <i class="fab fa-telegram"></i>
+          </div>
+          <h3 class="feature-title">Личный кабинет в Telegram</h3>
+          <p class="feature-desc">
+            Получайте конфиги, управляйте подпиской и следите за статусом серверов прямо внутри Telegram — как Mini App.
+          </p>
+        </article>
+
+        <!-- Карточка 6 -->
+        <article class="feature-card reveal reveal-delay-3">
+          <div class="feature-icon" aria-hidden="true">
+            <i class="fas fa-infinity"></i>
+          </div>
+          <h3 class="feature-title">Безлимитный трафик</h3>
+          <p class="feature-desc">
+            На тарифе Ultra — неограниченный трафик. На других тарифах — щедрые лимиты без скрытых списаний.
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       PRICING SECTION
+       ================================================ -->
+  <section class="section pricing" id="pricing" aria-labelledby="pricing-title">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-label">
+          <i class="fas fa-tags" aria-hidden="true"></i>
+          Тарифы
+        </span>
+        <h2 class="section-title" id="pricing-title">
+          Прозрачные цены,
+          <span class="gradient-text">без скрытых платежей</span>
+        </h2>
+        <p class="section-subtitle">
+          Выберите подходящий план. Отмена подписки в любой момент без штрафов.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- Standard -->
+        <article class="pricing-card reveal">
+          <div class="pricing-plan">Standard</div>
+          <div class="pricing-price">
+            <span class="pricing-currency">₽</span>
+            <span class="pricing-amount">199</span>
+          </div>
+          <div class="pricing-period">в месяц</div>
+          <div class="pricing-divider" aria-hidden="true"></div>
+          <ul class="pricing-features-list" aria-label="Включено в тариф">
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>1 устройство</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>30 ГБ трафика в месяц</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>31 сервер на выбор</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>WireGuard / VLESS</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>Telegram-бот</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>Поддержка 24/7</span></li>
+          </ul>
+          <a href="https://t.me/plumecrobot" target="_blank" rel="noopener" class="btn btn-outline-accent btn-block">
+            <i class="fab fa-telegram" aria-hidden="true"></i>
+            Выбрать Standard
+          </a>
+        </article>
+
+        <!-- Pro -->
+        <article class="pricing-card featured reveal reveal-delay-1" aria-label="Рекомендуемый тариф">
+          <div class="pricing-popular" aria-label="Популярный выбор">Популярный</div>
+          <div class="pricing-plan">Pro</div>
+          <div class="pricing-price">
+            <span class="pricing-currency">₽</span>
+            <span class="pricing-amount">399</span>
+          </div>
+          <div class="pricing-period">в месяц</div>
+          <div class="pricing-divider" aria-hidden="true"></div>
+          <ul class="pricing-features-list" aria-label="Включено в тариф">
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>3 устройства</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>100 ГБ трафика в месяц</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>31 сервер на выбор</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>WireGuard / VLESS</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>Telegram-бот</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>Приоритетная поддержка</span></li>
+          </ul>
+          <a href="https://t.me/plumecrobot" target="_blank" rel="noopener" class="btn btn-primary btn-block">
+            <i class="fab fa-telegram" aria-hidden="true"></i>
+            Выбрать Pro
+          </a>
+        </article>
+
+        <!-- Ultra -->
+        <article class="pricing-card reveal reveal-delay-2">
+          <div class="pricing-plan">Ultra</div>
+          <div class="pricing-price">
+            <span class="pricing-currency">₽</span>
+            <span class="pricing-amount">799</span>
+          </div>
+          <div class="pricing-period">в месяц</div>
+          <div class="pricing-divider" aria-hidden="true"></div>
+          <ul class="pricing-features-list" aria-label="Включено в тариф">
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>5 устройств</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>Безлимитный трафик</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>31 сервер на выбор</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>WireGuard / VLESS</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>Telegram-бот</span></li>
+            <li class="pricing-feature-item"><i class="fas fa-check" aria-hidden="true"></i><span>VIP-поддержка</span></li>
+          </ul>
+          <a href="https://t.me/plumecrobot" target="_blank" rel="noopener" class="btn btn-outline-accent btn-block">
+            <i class="fab fa-telegram" aria-hidden="true"></i>
+            Выбрать Ultra
+          </a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       FAQ SECTION
+       ================================================ -->
+  <section class="section faq" id="faq" aria-labelledby="faq-title">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-label">
+          <i class="fas fa-question-circle" aria-hidden="true"></i>
+          FAQ
+        </span>
+        <h2 class="section-title" id="faq-title">
+          Часто задаваемые
+          <span class="gradient-text">вопросы</span>
+        </h2>
+        <p class="section-subtitle">
+          Не нашли ответа? Напишите нам в Telegram — ответим в течение 15 минут.
+        </p>
+      </div>
+
+      <div class="faq-list" role="list">
+
+        <div class="faq-item reveal" role="listitem">
+          <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
+            <span>Как подключиться к VPN?</span>
+            <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+          </div>
+          <div class="faq-answer" aria-hidden="true">
+            <p>
+              Откройте бота <a href="https://t.me/plumecrobot" target="_blank" rel="noopener">@plumecrobot</a> в Telegram
+              и нажмите «Открыть приложение». Войдёте автоматически — без паролей.
+              После выбора тарифа бот пришлёт конфигурационный файл. Установите WireGuard или v2rayNG (для VLESS),
+              импортируйте конфиг — готово. Подробная инструкция для всех платформ есть в личном кабинете.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item reveal reveal-delay-1" role="listitem">
+          <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
+            <span>Нужна ли регистрация?</span>
+            <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+          </div>
+          <div class="faq-answer" aria-hidden="true">
+            <p>
+              Нет. Вход происходит автоматически через ваш Telegram-аккаунт.
+              Просто откройте <a href="https://t.me/plumecrobot" target="_blank" rel="noopener">@plumecrobot</a> —
+              аккаунт создаётся мгновенно. Никаких паролей, email или личных данных не нужно.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item reveal reveal-delay-2" role="listitem">
+          <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
+            <span>Какие протоколы поддерживаются?</span>
+            <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+          </div>
+          <div class="faq-answer" aria-hidden="true">
+            <p>
+              WireGuard — самый быстрый и современный VPN-протокол, а также VLESS (Reality) —
+              протокол с маскировкой трафика, невидимый для DPI-блокировок. Оба доступны на всех тарифах.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item reveal reveal-delay-3" role="listitem">
+          <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
+            <span>Хранятся ли мои логи?</span>
+            <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+          </div>
+          <div class="faq-answer" aria-hidden="true">
+            <p>
+              Нет. Строгая политика No-Log: мы не записываем данные о подключениях,
+              посещённых ресурсах, IP-адресах или времени активности. Ваша конфиденциальность — наш приоритет.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item reveal reveal-delay-4" role="listitem">
+          <div class="faq-question" role="button" tabindex="0" aria-expanded="false">
+            <span>Как работает возврат средств?</span>
+            <i class="fas fa-chevron-down faq-chevron" aria-hidden="true"></i>
+          </div>
+          <div class="faq-answer" aria-hidden="true">
+            <p>
+              Гарантия возврата в течение 7 дней с момента оплаты, если VPN не работает
+              на вашем устройстве или в вашем регионе. Напишите в поддержку через бота —
+              средства вернутся в течение 3 рабочих дней.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       FOOTER
+       ================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Бренд -->
+        <div class="footer-brand">
+          <a href="/" class="footer-logo">
+            <i class="fas fa-feather-alt" aria-hidden="true"></i>
+            Plume Connect
+          </a>
+          <p class="footer-brand-desc">
+            VPN нового поколения с 31 сервером в 15 странах.
+            Без логов. Без ограничений. Только через Telegram.
+          </p>
+        </div>
+
+        <!-- Продукт -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Продукт</h4>
+          <nav class="footer-links" aria-label="Ссылки продукта">
+            <a href="#features">Возможности</a>
+            <a href="#pricing">Тарифы</a>
+            <a href="#faq">FAQ</a>
+            <a href="https://t.me/plumecrobot" target="_blank" rel="noopener">Начать</a>
+          </nav>
+        </div>
+
+        <!-- Поддержка -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Поддержка</h4>
+          <nav class="footer-links" aria-label="Ссылки поддержки">
+            <a href="https://t.me/plumecrobot" target="_blank" rel="noopener">Telegram-бот</a>
+            <a href="https://t.me/buildvpn_io" target="_blank" rel="noopener">Telegram-канал</a>
+            <a href="#faq">Документация</a>
+          </nav>
+        </div>
+
+        <!-- Правовые -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Правовые</h4>
+          <nav class="footer-links" aria-label="Правовые ссылки">
+            <a href="/privacy">Политика конфиденциальности</a>
+            <a href="/terms">Условия использования</a>
+            <a href="/refund">Возврат средств</a>
+            <a href="/legal">Правовая информация</a>
+          </nav>
+        </div>
+
+      </div>
+
+      <!-- Нижняя строка -->
+      <div class="footer-bottom">
+        <p class="footer-copy">
+          &copy; 2025 Plume Connect. Все права защищены.
+        </p>
+        <div class="footer-social" aria-label="Социальные сети">
+          <a href="https://t.me/buildvpn_io" target="_blank" rel="noopener" aria-label="Telegram">
+            <i class="fab fa-telegram" aria-hidden="true"></i>
+          </a>
+          <a href="https://github.com/plume-connect" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="fab fa-github" aria-hidden="true"></i>
+          </a>
+          <a href="https://twitter.com/plume_connect" target="_blank" rel="noopener" aria-label="Twitter / X">
+            <i class="fab fa-x-twitter" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+
+</body>
+</html>

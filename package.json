@@ -1,0 +1,20 @@
+{
+  "name": "plume-connect",
+  "version": "1.0.0",
+  "description": "Plume Connect — VPN нового поколения. Лендинг + авторизация.",
+  "private": true,
+  "engines": {
+    "node": ">=18.x"
+  },
+  "devDependencies": {
+    "vercel": "latest"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site — no build step required'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.38.0"
+  }
+}

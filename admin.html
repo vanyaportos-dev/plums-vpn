@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Админ-панель — Plume Connect</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ───────────────────────────────────────────────
+       DESIGN TOKENS
+    ─────────────────────────────────────────────── */
+    :root {
+      --bg-page:    #0a0a0f;
+      --bg-card:    #14141f;
+      --bg-input:   #1a1a2e;
+      --bg-elevated:#1e1e30;
+      --text-primary:   #ffffff;
+      --text-secondary: #b0b0c0;
+      --text-muted:     #6b6b80;
+      --accent:         #6c5ce7;
+      --accent-hover:   #5a4bd1;
+      --accent-glow:    rgba(108, 92, 231, 0.25);
+      --success:        #00d68f;
+      --success-bg:     rgba(0, 214, 143, 0.12);
+      --danger:         #ff4444;
+      --danger-bg:      rgba(255, 68, 68, 0.12);
+      --warning:        #ffb300;
+      --warning-bg:     rgba(255, 179, 0, 0.12);
+      --frozen:         #4fc3f7;
+      --frozen-bg:      rgba(79, 195, 247, 0.12);
+      --border:         rgba(255, 255, 255, 0.07);
+      --border-hover:   rgba(108, 92, 231, 0.4);
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  18px;
+      --radius-full:9999px;
+      --font:       'Inter', sans-serif;
+      --transition: 0.2s ease;
+      --shadow:     0 8px 32px rgba(0,0,0,0.4);
+      --shadow-accent: 0 4px 20px rgba(108,92,231,0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 5%, rgba(108,92,231,0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 90% 90%, rgba(255,68,68,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ───────────────────────────────────────────────
+       NAVBAR
+    ─────────────────────────────────────────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+
+    .navbar__inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .navbar__brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .navbar__brand i { color: var(--accent); font-size: 1.3rem; }
+
+    .navbar__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(255,68,68,0.15);
+      color: var(--danger);
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(255,68,68,0.25);
+    }
+
+    .navbar__right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* ───────────────────────────────────────────────
+       LAYOUT
+    ─────────────────────────────────────────────── */
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.25rem;
+    }
+
+    .page-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* ───────────────────────────────────────────────
+       STATS GRID
+    ─────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .stats-grid { grid-template-columns: 1fr; } }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all var(--transition);
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .stat-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .stat-card__icon--purple { background: rgba(108,92,231,0.15); color: var(--accent); }
+    .stat-card__icon--green  { background: var(--success-bg); color: var(--success); }
+    .stat-card__icon--blue   { background: var(--frozen-bg); color: var(--frozen); }
+    .stat-card__icon--red    { background: var(--danger-bg); color: var(--danger); }
+
+    .stat-card__label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-card__value {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    /* ───────────────────────────────────────────────
+       SECTION
+    ─────────────────────────────────────────────── */
+    .section { margin-bottom: 2.5rem; }
+
+    .section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .section__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section__title i { color: var(--accent); }
+
+    /* ───────────────────────────────────────────────
+       FILTER TABS
+    ─────────────────────────────────────────────── */
+    .filter-tabs {
+      display: flex;
+      gap: 0.375rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.3rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-tabs::-webkit-scrollbar { display: none; }
+
+    .filter-tab {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.875rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .filter-tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+
+    .filter-tab--active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .filter-tab .count {
+      background: rgba(255,255,255,0.2);
+      border-radius: var(--radius-full);
+      padding: 0 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    /* ───────────────────────────────────────────────
+       SEARCH INPUT
+    ─────────────────────────────────────────────── */
+    .search-wrap {
+      position: relative;
+      max-width: 280px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 0.55rem 1rem 0.55rem 2.25rem;
+      color: var(--text-primary);
+      font-family: var(--font);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .search-input:focus { border-color: var(--accent); }
+
+    .search-input::placeholder { color: var(--text-muted); }
+
+    /* ───────────────────────────────────────────────
+       TABLES
+    ─────────────────────────────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    .data-table th {
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.875rem 1rem;
+      text-align: left;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+    }
+
+    .data-table td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    .data-table tbody tr:hover td {
+      background: rgba(255,255,255,0.025);
+    }
+
+    .data-table code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: rgba(108,92,231,0.1);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+    }
+
+    /* User avatar in table */
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #a18cf0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+
+    .user-email {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ───────────────────────────────────────────────
+       BADGES
+    ─────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.22rem 0.625rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge--accent   { background: rgba(108,92,231,0.15); color: #a89cf0; }
+    .badge--success  { background: var(--success-bg); color: var(--success); }
+    .badge--danger   { background: var(--danger-bg); color: var(--danger); }
+    .badge--warning  { background: var(--warning-bg); color: var(--warning); }
+    .badge--frozen   { background: var(--frozen-bg); color: var(--frozen); }
+    .badge--admin    { background: rgba(255,68,68,0.12); color: var(--danger); border: 1px solid rgba(255,68,68,0.2); }
+    .badge--user     { background: rgba(255,255,255,0.06); color: var(--text-muted); }
+
+    /* ───────────────────────────────────────────────
+       BUTTONS
+    ─────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.6rem 1.25rem;
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: var(--font);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+    .btn--primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(108,92,231,0.3);
+    }
+    .btn--primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(108,92,231,0.45);
+    }
+
+    .btn--ghost {
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .btn--ghost:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-primary);
+    }
+
+    .btn--danger {
+      background: rgba(255,68,68,0.12);
+      color: var(--danger);
+      border: 1px solid rgba(255,68,68,0.2);
+    }
+    .btn--danger:hover {
+      background: rgba(255,68,68,0.22);
+      border-color: var(--danger);
+    }
+
+    .btn--sm  { padding: 0.375rem 0.75rem; font-size: 0.8rem; }
+    .btn--xs  { padding: 0.25rem 0.6rem; font-size: 0.75rem; }
+
+    /* ───────────────────────────────────────────────
+       EMPTY STATE & LOADING
+    ─────────────────────────────────────────────── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 3rem 1.5rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .empty-state i { font-size: 2rem; opacity: 0.35; }
+    .empty-state p { font-size: 0.9rem; }
+
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 2.5rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* ───────────────────────────────────────────────
+       PAGINATION
+    ─────────────────────────────────────────────── */
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 1rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .table-footer__info {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .page-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
+    .page-btn--active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* ───────────────────────────────────────────────
+       MODAL
+    ─────────────────────────────────────────────── */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal--open { opacity: 1; pointer-events: all; }
+
+    .modal__overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal__box {
+      position: relative;
+      z-index: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: var(--shadow);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+
+    .modal--open .modal__box { transform: translateY(0); }
+
+    .modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal__title { font-size: 1.1rem; font-weight: 700; }
+
+    .modal__close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.06);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all var(--transition);
+    }
+    .modal__close:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+
+    .modal__body { display: flex; flex-direction: column; gap: 1rem; }
+
+    .detail-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-row:last-child { border-bottom: none; }
+
+    .detail-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      font-weight: 500;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    /* ───────────────────────────────────────────────
+       TOAST
+    ─────────────────────────────────────────────── */
+    #toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 360px;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1.25rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateX(20px);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toast--visible { opacity: 1; transform: translateX(0); }
+    .toast--success { border-left: 3px solid var(--success); }
+    .toast--success i { color: var(--success); }
+    .toast--error { border-left: 3px solid var(--danger); }
+    .toast--error i { color: var(--danger); }
+    .toast--info { border-left: 3px solid var(--accent); }
+    .toast--info i { color: var(--accent); }
+
+    /* ───────────────────────────────────────────────
+       RESPONSIVE
+    ─────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .page-wrapper { padding: 1.25rem 1rem 3rem; }
+      .page-title { font-size: 1.35rem; }
+      .section__header { flex-direction: column; align-items: flex-start; }
+      .search-wrap { max-width: 100%; }
+      .data-table th, .data-table td { padding: 0.75rem 0.75rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <div style="display:flex;align-items:center;gap:0.875rem;">
+        <a href="/" class="navbar__brand">
+          <i class="fas fa-feather-alt"></i>
+          Plume Connect
+        </a>
+        <span class="navbar__badge">
+          <i class="fas fa-shield-alt"></i> Админ
+        </span>
+      </div>
+      <div class="navbar__right">
+        <a href="/dashboard" class="btn btn--ghost btn--sm">
+          <i class="fas fa-user"></i> ЛК
+        </a>
+        <button class="btn btn--ghost btn--sm" id="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Выйти
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="page-wrapper">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Админ-панель</h1>
+        <p class="page-subtitle">Управление пользователями и подписками</p>
+      </div>
+      <button class="btn btn--primary btn--sm" onclick="refreshAll()">
+        <i class="fas fa-sync-alt"></i> Обновить
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--purple">
+          <i class="fas fa-users"></i>
+        </div>
+        <div>
+          <div class="stat-card__label">Всего пользователей</div>
+          <div class="stat-card__value" id="admin-stat-users">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--green">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div>
+          <div class="stat-card__label">Активных подписок</div>
+          <div class="stat-card__value" id="admin-stat-active">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--blue">
+          <i class="fas fa-snowflake"></i>
+        </div>
+        <div>
+          <div class="stat-card__label">Замороженных</div>
+          <div class="stat-card__value" id="admin-stat-frozen">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__icon stat-card__icon--red">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <div>
+          <div class="stat-card__label">Истекших</div>
+          <div class="stat-card__value" id="admin-stat-expired">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── USERS SECTION ─── -->
+    <div class="section" id="users-section">
+      <div class="section__header">
+        <h2 class="section__title">
+          <i class="fas fa-users"></i> Пользователи
+        </h2>
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            class="search-input"
+            id="users-search"
+            placeholder="Поиск по email или имени…"
+            oninput="filterUsers(this.value)"
+          />
+        </div>
+      </div>
+
+      <div id="users-table-wrap">
+        <div class="loading-spinner">
+          <i class="fas fa-circle-notch fa-spin"></i> Загрузка пользователей…
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SUBSCRIPTIONS SECTION ─── -->
+    <div class="section" id="subs-section">
+      <div class="section__header">
+        <h2 class="section__title">
+          <i class="fas fa-layer-group"></i> Все подписки
+        </h2>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+          <div class="filter-tabs" id="subs-filters">
+            <button class="filter-tab filter-tab--active" data-filter="all" onclick="filterSubs('all')">
+              Все <span class="count" id="count-all">0</span>
+            </button>
+            <button class="filter-tab" data-filter="active" onclick="filterSubs('active')">
+              <i class="fas fa-check-circle" style="color:var(--success)"></i>
+              Активные <span class="count" id="count-active">0</span>
+            </button>
+            <button class="filter-tab" data-filter="frozen" onclick="filterSubs('frozen')">
+              <i class="fas fa-snowflake" style="color:var(--frozen)"></i>
+              Замороженные <span class="count" id="count-frozen">0</span>
+            </button>
+            <button class="filter-tab" data-filter="expired" onclick="filterSubs('expired')">
+              <i class="fas fa-times-circle" style="color:var(--danger)"></i>
+              Истекшие <span class="count" id="count-expired">0</span>
+            </button>
+          </div>
+          <div class="search-wrap">
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              class="search-input"
+              id="subs-search"
+              placeholder="Поиск по UUID…"
+              oninput="filterSubsBySearch(this.value)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div id="subs-table-wrap">
+        <div class="loading-spinner">
+          <i class="fas fa-circle-notch fa-spin"></i> Загрузка подписок…
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══ MODAL: USER DETAIL ═══ -->
+  <div class="modal" id="user-modal" role="dialog">
+    <div class="modal__overlay"></div>
+    <div class="modal__box">
+      <div class="modal__header">
+        <h2 class="modal__title"><i class="fas fa-user" style="color:var(--accent)"></i> Пользователь</h2>
+        <button class="modal__close" onclick="closeModal('user-modal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal__body" id="user-modal-body">
+        <div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODAL: SUB DETAIL ═══ -->
+  <div class="modal" id="sub-modal" role="dialog">
+    <div class="modal__overlay"></div>
+    <div class="modal__box">
+      <div class="modal__header">
+        <h2 class="modal__title"><i class="fas fa-shield-alt" style="color:var(--accent)"></i> Подписка</h2>
+        <button class="modal__close" onclick="closeModal('sub-modal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal__body" id="sub-modal-body">
+        <div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" aria-live="polite"></div>
+
+  <script>
+    'use strict';
+
+    /* ───────────────────────────────────────────────
+       STATE
+    ─────────────────────────────────────────────── */
+    const AdminState = {
+      users: [],
+      subscriptions: [],
+      currentSubFilter: 'all',
+      usersSearch: '',
+      subsSearch: '',
+      usersPage: 1,
+      subsPage: 1,
+      perPage: 15
+    };
+
+    /* ───────────────────────────────────────────────
+       HELPERS
+    ─────────────────────────────────────────────── */
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => [...document.querySelectorAll(sel)];
+
+    function escapeHtml(str) {
+      if (!str) return '—';
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function formatDate(d) {
+      if (!d) return '—';
+      return new Date(d).toLocaleDateString('ru-RU', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function formatPrice(p) {
+      if (!p && p !== 0) return '—';
+      return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(p);
+    }
+
+    function getInitials(name, email) {
+      const src = name || email || '?';
+      return src.split(/[\s@]/)[0].substring(0, 2).toUpperCase();
+    }
+
+    function getAvatarColor(str) {
+      const colors = ['#6c5ce7','#00b894','#fd79a8','#fdcb6e','#0984e3','#e17055'];
+      let hash = 0;
+      for (let c of (str || '?')) hash = c.charCodeAt(0) + ((hash << 5) - hash);
+      return colors[Math.abs(hash) % colors.length];
+    }
+
+    /* ───────────────────────────────────────────────
+       API
+    ─────────────────────────────────────────────── */
+    const API = {
+      async get(path) {
+        const res = await fetch(path, { credentials: 'include' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+        return data;
+      },
+      async post(path, body = {}) {
+        const res = await fetch(path, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+        return data;
+      }
+    };
+
+    /* ───────────────────────────────────────────────
+       TOAST
+    ─────────────────────────────────────────────── */
+    function showToast(message, type = 'success') {
+      const container = $('#toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast--${type}`;
+      const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
+      toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('toast--visible'));
+      setTimeout(() => { toast.classList.remove('toast--visible'); setTimeout(() => toast.remove(), 350); }, 3500);
+    }
+
+    /* ───────────────────────────────────────────────
+       MODAL
+    ─────────────────────────────────────────────── */
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) { m.classList.add('modal--open'); document.body.style.overflow = 'hidden'; }
+    }
+
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) { m.classList.remove('modal--open'); document.body.style.overflow = ''; }
+    }
+
+    /* ───────────────────────────────────────────────
+       AUTH CHECK
+    ─────────────────────────────────────────────── */
+    async function checkAuth() {
+      try {
+        const data = await API.get('/api/auth/me');
+        if (data.user?.role !== 'admin') {
+          alert('Доступ запрещён. Только для администраторов.');
+          window.location.href = '/dashboard';
+        }
+      } catch {
+        window.location.href = '/login';
+      }
+    }
+
+    /* ───────────────────────────────────────────────
+       LOAD DATA
+    ─────────────────────────────────────────────── */
+    async function loadUsers() {
+      try {
+        const data = await API.get('/api/admin/users');
+        AdminState.users = data.users || [];
+        renderUsers();
+      } catch (e) {
+        $('#users-table-wrap').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Ошибка: ${e.message}</p></div>`;
+      }
+    }
+
+    async function loadSubscriptions() {
+      try {
+        const data = await API.get('/api/admin/subscriptions');
+        AdminState.subscriptions = data.subscriptions || [];
+        updateSubCounts();
+        renderSubscriptions();
+        updateAdminStats();
+      } catch (e) {
+        $('#subs-table-wrap').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Ошибка: ${e.message}</p></div>`;
+      }
+    }
+
+    /* ───────────────────────────────────────────────
+       RENDER: USERS TABLE
+    ─────────────────────────────────────────────── */
+    function renderUsers() {
+      const wrap = $('#users-table-wrap');
+      let users = AdminState.users;
+
+      // Поиск
+      if (AdminState.usersSearch) {
+        const q = AdminState.usersSearch.toLowerCase();
+        users = users.filter(u =>
+          (u.email || '').toLowerCase().includes(q) ||
+          (u.name || '').toLowerCase().includes(q)
+        );
+      }
+
+      // Пагинация
+      const total = users.length;
+      const pages = Math.ceil(total / AdminState.perPage);
+      const page = Math.min(AdminState.usersPage, pages || 1);
+      const sliced = users.slice((page - 1) * AdminState.perPage, page * AdminState.perPage);
+
+      if (!sliced.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Пользователи не найдены</p></div>';
+        return;
+      }
+
+      wrap.innerHTML = `
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Пользователь</th>
+                <th>Роль</th>
+                <th>Подписок</th>
+                <th>Зарегистрирован</th>
+                <th>Последний вход</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sliced.map(u => `
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar" style="background:linear-gradient(135deg, ${getAvatarColor(u.email)}, #a18cf0)">
+                        ${getInitials(u.name, u.email)}
+                      </div>
+                      <div>
+                        <div class="user-name">${escapeHtml(u.name || 'Без имени')}</div>
+                        <div class="user-email">${escapeHtml(u.email)}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge badge--${u.role === 'admin' ? 'admin' : 'user'}">
+                      <i class="fas ${u.role === 'admin' ? 'fa-shield-alt' : 'fa-user'}"></i>
+                      ${u.role === 'admin' ? 'Администратор' : 'Пользователь'}
+                    </span>
+                  </td>
+                  <td>
+                    <strong style="color:var(--text-primary)">${(u.subscriptions || []).length}</strong>
+                  </td>
+                  <td>${formatDate(u.created_at)}</td>
+                  <td>${formatDate(u.last_login)}</td>
+                  <td>
+                    <div style="display:flex;gap:0.375rem;">
+                      <button class="btn btn--xs btn--ghost" onclick="showUserDetail('${escapeHtml(u.email)}')">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="btn btn--xs btn--${u.role === 'admin' ? 'warning' : 'accent'}" 
+                              onclick="toggleUserRole('${escapeHtml(u.email)}', '${u.role}')"
+                              title="${u.role === 'admin' ? 'Снять права' : 'Сделать админом'}">
+                        <i class="fas fa-${u.role === 'admin' ? 'user-times' : 'user-shield'}"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ${renderTableFooter(total, page, pages, 'users')}
+      `;
+    }
+
+    /* ───────────────────────────────────────────────
+       RENDER: SUBSCRIPTIONS TABLE
+    ─────────────────────────────────────────────── */
+    function renderSubscriptions() {
+      const wrap = $('#subs-table-wrap');
+      let subs = AdminState.subscriptions;
+
+      // Фильтр статуса
+      if (AdminState.currentSubFilter !== 'all') {
+        subs = subs.filter(s => s.status === AdminState.currentSubFilter);
+      }
+
+      // Поиск
+      if (AdminState.subsSearch) {
+        const q = AdminState.subsSearch.toLowerCase();
+        subs = subs.filter(s =>
+          (s.uuid || '').toLowerCase().includes(q) ||
+          (s.user_email || '').toLowerCase().includes(q) ||
+          (s.plan || '').toLowerCase().includes(q)
+        );
+      }
+
+      // Пагинация
+      const total = subs.length;
+      const pages = Math.ceil(total / AdminState.perPage);
+      const page = Math.min(AdminState.subsPage, pages || 1);
+      const sliced = subs.slice((page - 1) * AdminState.perPage, page * AdminState.perPage);
+
+      if (!sliced.length) {
+        wrap.innerHTML = '<div class="empty-state"><i class="fas fa-layer-group"></i><p>Подписки не найдены</p></div>';
+        return;
+      }
+
+      wrap.innerHTML = `
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>UUID подписки</th>
+                <th>Пользователь</th>
+                <th>Тариф</th>
+                <th>Статус</th>
+                <th>Создана</th>
+                <th>Истекает</th>
+                <th>Трафик</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sliced.map(s => `
+                <tr>
+                  <td><code title="${escapeHtml(s.uuid)}">${(s.uuid || '').substring(0, 13)}…</code></td>
+                  <td>
+                    <div style="font-size:0.82rem;color:var(--text-secondary)">${escapeHtml(s.user_email || '—')}</div>
+                  </td>
+                  <td style="color:var(--text-primary);font-weight:600">${escapeHtml(s.plan || '—')}</td>
+                  <td>
+                    <span class="badge badge--${getStatusBadge(s.status)}">
+                      <i class="fas ${getStatusIcon(s.status)}"></i>
+                      ${getStatusLabel(s.status)}
+                    </span>
+                  </td>
+                  <td>${formatDate(s.created_at)}</td>
+                  <td>${formatDate(s.expires_at)}</td>
+                  <td>
+                    ${s.traffic_total
+                      ? `<span style="font-size:0.82rem">${(s.traffic_used || 0).toFixed(1)} / ${s.traffic_total} ГБ</span>`
+                      : '<span style="color:var(--text-muted)">∞</span>'}
+                  </td>
+                  <td>
+                    <div style="display:flex;gap:0.375rem;">
+                      <button class="btn btn--xs btn--ghost" onclick="showSubDetail('${escapeHtml(s.uuid)}')" title="Детали">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="btn btn--xs btn--${s.status === 'frozen' ? 'success' : 'ghost'}" 
+                              onclick="adminToggleFreeze('${escapeHtml(s.uuid)}', '${s.status}')"
+                              title="${s.status === 'frozen' ? 'Разморозить' : 'Заморозить'}">
+                        <i class="fas fa-${s.status === 'frozen' ? 'play' : 'pause'}"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ${renderTableFooter(total, page, pages, 'subs')}
+      `;
+    }
+
+    /* ───────────────────────────────────────────────
+       TABLE FOOTER WITH PAGINATION
+    ─────────────────────────────────────────────── */
+    function renderTableFooter(total, page, pages, type) {
+      const from = total === 0 ? 0 : (page - 1) * AdminState.perPage + 1;
+      const to = Math.min(page * AdminState.perPage, total);
+
+      let pageButtons = '';
+      for (let i = 1; i <= Math.min(pages, 7); i++) {
+        pageButtons += `<button class="page-btn ${i === page ? 'page-btn--active' : ''}" onclick="goPage('${type}', ${i})">${i}</button>`;
+      }
+
+      return `
+        <div class="table-footer">
+          <span class="table-footer__info">Показано ${from}–${to} из ${total}</span>
+          <div class="pagination">
+            <button class="page-btn" onclick="goPage('${type}', ${page - 1})" ${page <= 1 ? 'disabled' : ''}>
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            ${pageButtons}
+            <button class="page-btn" onclick="goPage('${type}', ${page + 1})" ${page >= pages ? 'disabled' : ''}>
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ───────────────────────────────────────────────
+       ACTIONS
+    ─────────────────────────────────────────────── */
+    function filterUsers(q) {
+      AdminState.usersSearch = q;
+      AdminState.usersPage = 1;
+      renderUsers();
+    }
+
+    function filterSubs(status) {
+      AdminState.currentSubFilter = status;
+      AdminState.subsPage = 1;
+      $$('.filter-tab').forEach(b => b.classList.toggle('filter-tab--active', b.dataset.filter === status));
+      renderSubscriptions();
+    }
+
+    function filterSubsBySearch(q) {
+      AdminState.subsSearch = q;
+      AdminState.subsPage = 1;
+      renderSubscriptions();
+    }
+
+    function goPage(type, page) {
+      if (page < 1) return;
+      if (type === 'users') { AdminState.usersPage = page; renderUsers(); }
+      if (type === 'subs')  { AdminState.subsPage = page; renderSubscriptions(); }
+    }
+
+    async function toggleUserRole(email, currentRole) {
+      const newRole = currentRole === 'admin' ? 'user' : 'admin';
+      if (!confirm(`Изменить роль пользователя ${email} на «${newRole === 'admin' ? 'Администратор' : 'Пользователь'}»?`)) return;
+      try {
+        await API.post('/api/admin/set-role', { email, role: newRole });
+        showToast('Роль обновлена', 'success');
+        await loadUsers();
+      } catch (e) {
+        showToast(`Ошибка: ${e.message}`, 'error');
+      }
+    }
+
+    async function adminToggleFreeze(uuid, status) {
+      const action = status === 'frozen' ? 'unfreeze' : 'freeze';
+      try {
+        await API.post(`/api/vpn/${action}`, { subscription_uuid: uuid });
+        showToast(action === 'freeze' ? 'Подписка заморожена' : 'Подписка разморожена', 'success');
+        await loadSubscriptions();
+      } catch (e) {
+        showToast(`Ошибка: ${e.message}`, 'error');
+      }
+    }
+
+    function showUserDetail(email) {
+      const user = AdminState.users.find(u => u.email === email);
+      if (!user) return;
+
+      const body = $('#user-modal-body');
+      const subs = user.subscriptions || [];
+      body.innerHTML = `
+        <div class="detail-row"><span class="detail-label">Имя</span><span class="detail-value">${escapeHtml(user.name || '—')}</span></div>
+        <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${escapeHtml(user.email)}</span></div>
+        <div class="detail-row"><span class="detail-label">Роль</span><span class="detail-value"><span class="badge badge--${user.role === 'admin' ? 'admin' : 'user'}">${user.role === 'admin' ? 'Администратор' : 'Пользователь'}</span></span></div>
+        <div class="detail-row"><span class="detail-label">Зарегистрирован</span><span class="detail-value">${formatDate(user.created_at)}</span></div>
+        <div class="detail-row"><span class="detail-label">Последний вход</span><span class="detail-value">${formatDate(user.last_login)}</span></div>
+        <div class="detail-row"><span class="detail-label">Подписок</span><span class="detail-value" style="color:var(--accent);font-weight:700">${subs.length}</span></div>
+        ${subs.map(s => `
+          <div class="detail-row" style="padding-left:0.5rem;border-left:2px solid var(--accent);">
+            <span class="detail-label">${escapeHtml(s.plan || 'Подписка')}</span>
+            <span class="detail-value">
+              <span class="badge badge--${getStatusBadge(s.status)}">${getStatusLabel(s.status)}</span>
+            </span>
+          </div>
+        `).join('')}
+      `;
+      openModal('user-modal');
+    }
+
+    function showSubDetail(uuid) {
+      const sub = AdminState.subscriptions.find(s => s.uuid === uuid);
+      if (!sub) return;
+
+      const body = $('#sub-modal-body');
+      body.innerHTML = `
+        <div class="detail-row"><span class="detail-label">UUID</span><span class="detail-value"><code>${escapeHtml(sub.uuid)}</code></span></div>
+        <div class="detail-row"><span class="detail-label">Пользователь</span><span class="detail-value">${escapeHtml(sub.user_email || '—')}</span></div>
+        <div class="detail-row"><span class="detail-label">Тариф</span><span class="detail-value">${escapeHtml(sub.plan || '—')}</span></div>
+        <div class="detail-row"><span class="detail-label">Статус</span><span class="detail-value"><span class="badge badge--${getStatusBadge(sub.status)}">${getStatusLabel(sub.status)}</span></span></div>
+        <div class="detail-row"><span class="detail-label">Создана</span><span class="detail-value">${formatDate(sub.created_at)}</span></div>
+        <div class="detail-row"><span class="detail-label">Истекает</span><span class="detail-value">${formatDate(sub.expires_at)}</span></div>
+        <div class="detail-row"><span class="detail-label">Трафик</span><span class="detail-value">${sub.traffic_total ? `${(sub.traffic_used || 0).toFixed(1)} / ${sub.traffic_total} ГБ` : '∞'}</span></div>
+        <div class="detail-row">
+          <span class="detail-label">Ссылка</span>
+          <span class="detail-value">
+            <button class="btn btn--xs btn--ghost" onclick="copyToClipboard('https://network-api.adaptgroup.app/sub/${escapeHtml(sub.uuid)}')">
+              <i class="fas fa-copy"></i> Скопировать
+            </button>
+          </span>
+        </div>
+      `;
+      openModal('sub-modal');
+    }
+
+    /* ───────────────────────────────────────────────
+       STATS & COUNTS
+    ─────────────────────────────────────────────── */
+    function updateSubCounts() {
+      const subs = AdminState.subscriptions;
+      $('#count-all').textContent    = subs.length;
+      $('#count-active').textContent = subs.filter(s => s.status === 'active').length;
+      $('#count-frozen').textContent = subs.filter(s => s.status === 'frozen').length;
+      $('#count-expired').textContent = subs.filter(s => s.status === 'expired').length;
+    }
+
+    function updateAdminStats() {
+      const subs = AdminState.subscriptions;
+      const el = id => document.getElementById(id);
+      if (el('admin-stat-users'))   el('admin-stat-users').textContent   = AdminState.users.length;
+      if (el('admin-stat-active'))  el('admin-stat-active').textContent  = subs.filter(s => s.status === 'active').length;
+      if (el('admin-stat-frozen'))  el('admin-stat-frozen').textContent  = subs.filter(s => s.status === 'frozen').length;
+      if (el('admin-stat-expired')) el('admin-stat-expired').textContent = subs.filter(s => s.status === 'expired').length;
+    }
+
+    /* ───────────────────────────────────────────────
+       UTILS
+    ─────────────────────────────────────────────── */
+    function getStatusBadge(status) {
+      return { active: 'success', frozen: 'frozen', expired: 'danger', pending: 'warning' }[status] || 'user';
+    }
+
+    function getStatusLabel(status) {
+      return { active: 'Активна', frozen: 'Заморожена', expired: 'Истекла', pending: 'Ожидание' }[status] || status;
+    }
+
+    function getStatusIcon(status) {
+      return { active: 'fa-check-circle', frozen: 'fa-snowflake', expired: 'fa-times-circle', pending: 'fa-clock' }[status] || 'fa-circle';
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => showToast('Скопировано!', 'success'));
+    }
+
+    async function refreshAll() {
+      showToast('Обновление данных…', 'info');
+      await Promise.all([loadUsers(), loadSubscriptions()]);
+      showToast('Данные обновлены', 'success');
+    }
+
+    /* ───────────────────────────────────────────────
+       INIT
+    ─────────────────────────────────────────────── */
+    async function init() {
+      await checkAuth();
+
+      $$('.modal__overlay, .modal__close').forEach(el => {
+        el.addEventListener('click', () => {
+          $$('.modal').forEach(m => m.classList.remove('modal--open'));
+          document.body.style.overflow = '';
+        });
+      });
+
+      $('#logout-btn')?.addEventListener('click', async () => {
+        try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }); } catch {}
+        window.location.href = '/login';
+      });
+
+      await Promise.all([loadUsers(), loadSubscriptions()]);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
